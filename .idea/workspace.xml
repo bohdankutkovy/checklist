@@ -69,11 +69,6 @@
               <item name="checklist" type="b2602c69:ProjectViewProjectNode" />
               <item name="checklist" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="checklist" type="b2602c69:ProjectViewProjectNode" />
-              <item name="checklist" type="462c0819:PsiDirectoryNode" />
-              <item name="backend" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -113,12 +108,12 @@
       <updated>1560367625637</updated>
       <workItem from="1560367626835" duration="1769000" />
       <workItem from="1560369470168" duration="490000" />
-      <workItem from="1560370269796" duration="748000" />
+      <workItem from="1560370269796" duration="966000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3007000" />
+    <option name="totallyTimeSpent" value="3225000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
