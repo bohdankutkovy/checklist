@@ -1,0 +1,76 @@
+version: '2'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.development
+    depends_on:
+      - db
+      - redis
+      - worker
+    volumes:
+      - ./backend:/usr/src/backend-app
+    environment: &backend_enviroment_vars
+      RAILS_ENV: development
+      SECRET_KEY_BASE: 9497d4e6aff376ec9d58660905fee8458bcb609602c0b3e4816f7922411113502a1a439c3916235cd79dde097cbd7522e4747d7d66db38bdd35a3ff61b0da0d2
+
+      DB_MAX_THREADS: 2
+      DB_WEB_CONCURRENCY: 1
+
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret_local_password
+      DB_DATABASE: checklist_development
+      DB_HOST: db
+
+      REDIS_URL: redis://redis:6379/0
+      SIDEKIQ_REDIS_URL: redis://redis:6379/1
+  frontend:
+    build:
+      context: ./frontend/
+    depends_on:
+      - backend
+    command: npm start
+    volumes:
+      - ./frontend/:/usr/src/frontend-app
+      - ./frontend/node_modules:/usr/src/frontend-app/node_modules
+    ports:
+      - "35729:35729"
+  redis:
+    image: redis
+    volumes:
+      - ./backend/tmp/redis:/data
+    ports:
+      - 6379:6379
+  worker:
+    build: backend
+    command: bundle exec sidekiq
+    environment:
+      <<: *backend_enviroment_vars
+    volumes:
+      - ./backend:/usr/src/backend-app
+    depends_on:
+      - db
+      - redis
+  nginx:
+    image: bitnami/nginx:1.10.2-r1
+    volumes:
+      - ./config/nginx:/bitnami/nginx/conf/vhosts
+    depends_on:
+      - backend
+      - frontend
+    environment:
+      VIRTUAL_HOST: checklist.docker
+      VIRTUAL_PORT: 8080
+    ports:
+      - 8080:8080
+  db:
+    image: postgres
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret_local_password
+      ALLOW_IP_RANGE: 0.0.0.0/0
+    ports:
+      - 54321:5432

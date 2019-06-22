@@ -1,27 +1,24 @@
-# SQLite version 3.x
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
-#
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: postgres
-  password: secret
-  host: db
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-development:
-  <<: *default
-  database: checklist_development
+  timeout: 10000
+  pool: <%= (ENV['DB_MAX_THREADS'] || 5).to_i * 2 %>
+  host: <%= ENV['DB_HOST'] %>
+  username: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
 
 test:
   <<: *default
-  database: checklist_test
+  database: <%= ENV['DB_DATABASE'] %>
+
+development:
+  <<: *default
+  database: <%= ENV['DB_DATABASE'] %>
 
 production:
   <<: *default
-  database: checklist_production
-  username: backend
-  password: <%= ENV['BACKEND_DATABASE_PASSWORD'] %>
+  database: <%= ENV['DB_DATABASE'] %>
+  user: <%= ENV['DB_USERNAME'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+
+
